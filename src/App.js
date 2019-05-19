@@ -6,6 +6,7 @@ import {
   GoogleMap,
   Marker,
 } from "react-google-maps";
+import Locations from './location.json'
 
 
 const MapWithAMarker = withScriptjs(withGoogleMap(props =>
@@ -13,27 +14,23 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props =>
     defaultZoom={13}
     defaultCenter={{ lat: 39.970008, lng: 116.325888 }}
   >
-    <Marker
-      position={{ lat: 39.975836, lng: 116.318335 }}
-    />
-    <Marker
-      position={{ lat: 39.944608, lng: 116.340835 }}
-    />
-    <Marker
-      position={{ lat: 39.919566, lng: 116.306319 }}
-    />
-    <Marker
-      position={{ lat: 39.974179, lng: 116.293727 }}
-    />
-    <Marker
-      position={{ lat: 39.999667, lng: 116.326444 }}
-    />
+  {
+    props.markers.map(marker => (
+      <Marker
+        position = {marker}
+      />
+    ))
+  }
+    
   </GoogleMap>
 ));
 
 
 class MapApp extends React.Component {
 
+  state = {
+    markers: [{lat: 39.975836, lng: 116.318335}]
+  }
 
   render() {
     return (
@@ -61,7 +58,9 @@ class MapApp extends React.Component {
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO2Qc8-Ef1roxaLlccqGTfNLkTUGJsqMQ&libraries=geometry,drawing,places"
           loadingElement={<div id="loading"/>}
           containerElement={<div id="container"/>}
-          mapElement={<div id="map"/>}/>
+          mapElement={<div id="map"/>}
+          markers={this.state.markers}
+        />
       </div>
     );
   }
