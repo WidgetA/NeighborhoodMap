@@ -40,7 +40,10 @@ class MapApp extends React.Component {
       <div className="App">
         <div id="sidebarlist">
           <h2>Locations</h2>
-          
+          <button className="searchButton">Filter</button>
+          <div className="search-input">
+            <input type="text" placeholder="Input a Location"/>
+          </div>
         </div>
         <header>
           <nav>
