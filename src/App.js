@@ -29,22 +29,32 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props =>
 class MapApp extends React.Component {
 
   state = {
-    markers: [{lat: 39.975836, lng: 116.318335}]
+    markers: [{lat: 39.975836, lng: 116.318335}],
+    locationBar: true
+  }
+
+  handleClick() {
+    this.setState({locationBar: !this.state.locationBar})
   }
 
   render() {
     return (
       <div className="App">
-        <div id="sidebarlist">
-          <h2>Locations</h2>
-          <button className="searchButton">Filter</button>
-          <div className="search-input">
-            <input type="text" placeholder="Input a Location"/>
-          </div>
-        </div>
+        {
+          this.state.locationBar ? (
+            <div id="sidebarlist">
+              <h2>Locations</h2>
+              <button className="searchButton">Filter</button>
+              <div className="search-input">
+                <input type="text" placeholder="Input a Location"/>
+              </div>
+            </div>
+          ) : (
+          <div></div>)
+        }
         <header>
           <nav>
-            <div id="buttonOnSidebar">
+            <div id="buttonOnSidebar" onClick={this.handleClick.bind(this)}>
               <svg id="sidebar">
                 <path d="M8 23a1 1 0 0 1 0-2h16a1 1 0 0 1 0 2H8zm0-6a1 1 0 0 1 0-2h16a1 1 0 0 1 0 2H8zm0-6a1 1 0 0 1 0-2h16a1 1 0 0 1 0 2H8z" fill-rule="nonzero"></path>
               </svg>
