@@ -7,12 +7,13 @@ import {
   Marker,
 } from "react-google-maps";
 import Locations from './location.json'
+import * as API from './Api.js'
 
 
 const MapWithAMarker = withScriptjs(withGoogleMap(props =>
   <GoogleMap
     defaultZoom={13}
-    defaultCenter={{ lat: 39.970008, lng: 116.325888 }}
+    defaultCenter={props.center}
   >
   {
     props.markers.map(marker => (
@@ -29,8 +30,20 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props =>
 class MapApp extends React.Component {
 
   state = {
-    markers: [{lat: 39.975836, lng: 116.318335}],
-    locationBar: true
+    markers: Locations.locations,
+    center: Locations.center,
+    locationBar: true,
+    locationList: []
+  }
+
+  componentWillMount () {
+    const result = [];
+    for (let i = 0; i < this.state.markers.length; i++) {
+      API.getInfo(this.state.markers[i].lng, this.state.markers[i].lat).then(data => {
+        result.push(data)
+        this.setState({locationList: result})
+      })
+    }
   }
 
   handleClick() {
@@ -47,6 +60,19 @@ class MapApp extends React.Component {
               <button className="searchButton">Filter</button>
               <div className="search-input">
                 <input type="text" placeholder="Input a Location"/>
+              </div>
+              <div>
+                {
+                  this.state.locationList.map((e) => {
+                    return (
+                      <li>
+                        <a>
+                          {e}
+                        </a>
+                      </li>
+                      )
+                  })
+                }
               </div>
             </div>
           ) : (
@@ -70,6 +96,7 @@ class MapApp extends React.Component {
           containerElement={<div id="container"/>}
           mapElement={<div id="map"/>}
           markers={this.state.markers}
+          center={this.state.center}
         />
       </div>
     );
