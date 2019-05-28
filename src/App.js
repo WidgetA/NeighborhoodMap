@@ -5,26 +5,46 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  InfoWindow,
 } from "react-google-maps";
 import Locations from './location.json'
 import * as API from './Api.js'
 
-
-const MapWithAMarker = withScriptjs(withGoogleMap(props =>
-  <GoogleMap
-    defaultZoom={13}
-    defaultCenter={props.center}
-  >
-  {
-    props.markers.map(marker => (
-      <Marker
-        position = {marker}
-      />
-    ))
-  }
+const MapWithAMarker = withScriptjs(withGoogleMap(props => {
+  return(
+    <GoogleMap
+      defaultZoom={13}
+      defaultCenter={props.center}
+    >
     
-  </GoogleMap>
-));
+    {
+      props.markers.map(marker => {
+        const index = props.markers.findIndex((n) => n===marker)
+        return(
+          <Marker
+            position = {marker}
+            // onClick={() => props.handleToggleOpen(index)}
+            onClick={() => props.handleToggleOpen(index)}
+          >
+            {
+              (() =>{
+                if(props.windowBoxOpen[index]) {
+                  return(
+                    <InfoWindow onCloseClick={() => props.handleToggleClose(index)}>
+                      <h1>true</h1>
+                    </InfoWindow>
+                    )
+                }
+              })()
+            }
+          </Marker>
+          )
+      })
+    }
+      
+    </GoogleMap>
+    )
+}));
 
 
 class MapApp extends React.Component {
@@ -33,21 +53,39 @@ class MapApp extends React.Component {
     markers: Locations.locations,
     center: Locations.center,
     locationBar: true,
-    locationList: []
+    locationList: [],
+    windowBoxOpen: []
   }
 
   componentWillMount () {
     const result = [];
+    const openList = [];
     for (let i = 0; i < this.state.markers.length; i++) {
       API.getInfo(this.state.markers[i].lng, this.state.markers[i].lat).then(data => {
         result.push(data)
+        openList.push(false)
         this.setState({locationList: result})
+        this.setState({windowBoxOpen: openList})
       })
     }
   }
 
   handleClick() {
     this.setState({locationBar: !this.state.locationBar})
+  }
+
+  handleToggleOpen(index){
+    console.log("open")
+    let l = this.state.windowBoxOpen
+    l[index] = true
+    this.setState({windowBoxOpen:l})
+  }
+  
+  handleToggleClose(index){
+    console.log("close")
+    let l = this.state.windowBoxOpen
+    l[index] = false
+    this.setState({windowBoxOpen:l})
   }
 
   render() {
@@ -97,6 +135,9 @@ class MapApp extends React.Component {
           mapElement={<div id="map"/>}
           markers={this.state.markers}
           center={this.state.center}
+          windowBoxOpen={this.state.windowBoxOpen}
+          handleToggleOpen={this.handleToggleOpen.bind(this)}
+          handleToggleClose={this.handleToggleClose.bind(this)}
         />
       </div>
     );
