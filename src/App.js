@@ -23,7 +23,6 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props => {
         return(
           <Marker
             position = {marker}
-            // onClick={() => props.handleToggleOpen(index)}
             onClick={() => props.handleToggleOpen(index)}
           >
             {
@@ -40,8 +39,7 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props => {
           </Marker>
           )
       })
-    }
-      
+    }   
     </GoogleMap>
     )
 }));
