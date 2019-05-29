@@ -30,7 +30,7 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props => {
                 if(props.windowBoxOpen[index]) {
                   return(
                     <InfoWindow onCloseClick={() => props.handleToggleClose(index)}>
-                      <h1>true</h1>
+                      <h1>{props.locationList[index]}</h1>
                     </InfoWindow>
                     )
                 }
@@ -73,14 +73,12 @@ class MapApp extends React.Component {
   }
 
   handleToggleOpen(index){
-    console.log("open")
     let l = this.state.windowBoxOpen
     l[index] = true
     this.setState({windowBoxOpen:l})
   }
   
   handleToggleClose(index){
-    console.log("close")
     let l = this.state.windowBoxOpen
     l[index] = false
     this.setState({windowBoxOpen:l})
@@ -136,6 +134,7 @@ class MapApp extends React.Component {
           windowBoxOpen={this.state.windowBoxOpen}
           handleToggleOpen={this.handleToggleOpen.bind(this)}
           handleToggleClose={this.handleToggleClose.bind(this)}
+          locationList={this.state.locationList}
         />
       </div>
     );
