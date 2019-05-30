@@ -73,7 +73,6 @@ class MapApp extends React.Component {
         this.setState({windowBoxOpen: openList}, ()=>{this.OriginState=this.state})
       })
       API.getTraffic(this.state.markers[i].lng, this.state.markers[i].lat).then(data =>{
-        console.log(data)
         traffic.push(data)
         this.setState({trafficList: traffic}, ()=>{this.OriginState=this.state})
       })
