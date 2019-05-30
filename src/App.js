@@ -55,15 +55,17 @@ class MapApp extends React.Component {
     windowBoxOpen: []
   }
 
-  componentWillMount () {
+  OriginState = {}
+
+  componentWillMount() {
     const result = [];
     const openList = [];
     for (let i = 0; i < this.state.markers.length; i++) {
       API.getInfo(this.state.markers[i].lng, this.state.markers[i].lat).then(data => {
         result.push(data)
         openList.push(false)
-        this.setState({locationList: result})
-        this.setState({windowBoxOpen: openList})
+        this.setState({locationList: result}, ()=>{this.OriginState=this.state})
+        this.setState({windowBoxOpen: openList}, ()=>{this.OriginState=this.state})
       })
     }
   }
@@ -84,6 +86,34 @@ class MapApp extends React.Component {
     this.setState({windowBoxOpen:l})
   }
 
+  handleFilter(){
+    const input = this.inputTextbox.value
+    const indexList = []
+    if (input) {
+      for (let i = 0; i < this.state.locationList.length; i++) {
+        if (this.state.locationList[i].match(input +'+')) {
+          indexList.push(i)
+        } else ;
+      }
+      this.setState({locationList: this.state.locationList.filter(item => {
+        return indexList.indexOf(this.state.locationList.indexOf(item)) !== -1
+      })})
+      this.setState({markers: this.state.markers.filter(item => {
+        return indexList.indexOf(this.state.markers.indexOf(item)) !== -1
+      })})
+      this.setState({windowBoxOpen: () =>{
+        const boxList = []
+        for (let i = 0; i < indexList.length; i++) {
+          boxList.push(false)
+        }
+        return boxList
+      }})
+    } else {
+      this.setState(this.OriginState)
+      console.log(this.OriginState)
+    } 
+  }
+
   render() {
     return (
       <div className="App">
@@ -91,9 +121,9 @@ class MapApp extends React.Component {
           this.state.locationBar ? (
             <div id="sidebarlist">
               <h2>Locations</h2>
-              <button className="searchButton">Filter</button>
+              <button className="searchButton" onClick={this.handleFilter.bind(this)}>Filter</button>
               <div className="search-input">
-                <input type="text" placeholder="Input a Location"/>
+                <input type="text" placeholder="Input a Location" ref={input => this.inputTextbox = input}/>
               </div>
               <div>
                 {
