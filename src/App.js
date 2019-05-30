@@ -33,6 +33,7 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props => {
                       <div>
                         <h3>{props.locationList[index]}</h3>
                         {props.trafficList[index]}
+                        <p>（数据来源于高德地图）</p>
                       </div>
                     </InfoWindow>
                     )
