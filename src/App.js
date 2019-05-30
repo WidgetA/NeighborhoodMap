@@ -30,7 +30,10 @@ const MapWithAMarker = withScriptjs(withGoogleMap(props => {
                 if(props.windowBoxOpen[index]) {
                   return(
                     <InfoWindow onCloseClick={() => props.handleToggleClose(index)}>
-                      <h1>{props.locationList[index]}</h1>
+                      <div>
+                        <h3>{props.locationList[index]}</h3>
+                        {props.trafficList[index]}
+                      </div>
                     </InfoWindow>
                     )
                 }
@@ -52,7 +55,8 @@ class MapApp extends React.Component {
     center: Locations.center,
     locationBar: true,
     locationList: [],
-    windowBoxOpen: []
+    windowBoxOpen: [],
+    trafficList:[]
   }
 
   OriginState = {}
@@ -60,12 +64,18 @@ class MapApp extends React.Component {
   componentWillMount() {
     const result = [];
     const openList = [];
+    const traffic = [];
     for (let i = 0; i < this.state.markers.length; i++) {
       API.getInfo(this.state.markers[i].lng, this.state.markers[i].lat).then(data => {
         result.push(data)
         openList.push(false)
         this.setState({locationList: result}, ()=>{this.OriginState=this.state})
         this.setState({windowBoxOpen: openList}, ()=>{this.OriginState=this.state})
+      })
+      API.getTraffic(this.state.markers[i].lng, this.state.markers[i].lat).then(data =>{
+        console.log(data)
+        traffic.push(data)
+        this.setState({trafficList: traffic}, ()=>{this.OriginState=this.state})
       })
     }
   }
@@ -165,6 +175,7 @@ class MapApp extends React.Component {
           handleToggleOpen={this.handleToggleOpen.bind(this)}
           handleToggleClose={this.handleToggleClose.bind(this)}
           locationList={this.state.locationList}
+          trafficList={this.state.trafficList}
         />
       </div>
     );

@@ -3,9 +3,9 @@ const amapUrl_traffic = "https://restapi.amap.com/v3/traffic/status/circle?"
 const amapUrl_info = "https://restapi.amap.com/v3/geocode/regeo?"
 
 export const getTraffic = (lo, la) =>
-  fetch(`${amapUrl_traffic}/key=${amapKey}&/location=${lo},${la}&radius=1500`)
+  fetch(`${amapUrl_traffic}key=${amapKey}&location=${lo},${la}&radius=1500`)
     .then(res => res.json())
-    .then(data => data.trafficinfo)
+    .then(data => data.trafficinfo.description)
 
 export const getInfo = (lo, la) =>
   fetch(`${amapUrl_info}key=${amapKey}&location=${lo},${la}&poitype=&radius=1000&extensions=all&batch=false&roadlevel=0`)
